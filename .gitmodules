@@ -1,0 +1,6 @@
+[submodule "3rdparty/HomoMotion"]
+	path = 3rdparty/HomoMotion
+	url = git@gitee.com:PolarisF/HomoMotion.git
+[submodule "3rdparty/YOLOv11-RGBT"]
+	path = 3rdparty/YOLOv11-RGBT
+	url = https://github.com/wandahangFY/YOLOv11-RGBT.git
