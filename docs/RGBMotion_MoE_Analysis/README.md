@@ -132,6 +132,55 @@ merged = np.concatenate([rgb_image, motion_3ch], axis=2)
 |------|------|
 | 详细可行性分析 | `docs/RGBMotion_MoE_Analysis/可行性分析报告.md` |
 | 技术实现方案 | `docs/RGBMotion_MoE_Analysis/详细实现方案.md` |
+| YOLOv11-RGBT融合机制深度解析 | `docs/RGBMotion_MoE_Analysis/YOLOv11-RGBT融合机制深度解析.md` |
+| HomoMotion与YOLOv11-RGBT结合方案 | `docs/RGBMotion_MoE_Analysis/HomoMotion与YOLOv11-RGBT结合方案.md` |
+| HomoMotion使用指南 | `docs/RGBMotion_MoE_Analysis/HomoMotion使用指南.md` |
 | YOLO-Master MoE | `ultralytics/nn/modules/moe/` |
 | HomoMotion | `3rdparty/HomoMotion/` |
 | YOLOv11-RGBT 参考 | `3rdparty/YOLOv11-RGBT/` |
+
+---
+
+## HomoMotion 核心原理简述
+
+### 算法流程
+
+```
+连续帧序列 → 特征提取(ORB/SIFT) → 特征匹配 → 单应性估计 → 图像变换 → 帧差计算 → 运动图
+```
+
+**关键步骤**:
+
+1. **特征提取**: 对连续帧提取 ORB/SIFT/CUDA-SIFT 关键点和描述子
+2. **特征匹配**: 使用 BFMatcher 或 FLANN 进行描述子匹配，应用 Lowe Ratio Test 过滤
+3. **单应性估计**: 使用 RANSAC 计算 3×3 变换矩阵 \( H \)，使 `dst ≈ H @ src`
+4. **图像变换**: 使用 `cv2.warpPerspective` 将前一帧对齐到当前帧坐标系
+5. **有效区域**: 计算两帧的重叠区域掩码
+6. **帧差计算**: `|warped - ref|` 得到精确的运动区域
+
+### 与 YOLOv11-RGBT 的关键差异
+
+| 方面 | YOLOv11-RGBT | HomoMotion + RGB |
+|------|--------------|-------------------|
+| 第二模态 | 红外图像 (被动传感器) | 运动信息 (主动计算) |
+| 对准方式 | 无需像素级对准 | 需单应性矩阵精确对准 |
+| 对齐质量 | 依赖硬件校准 | 纯算法实现，动态适应 |
+| 互补性 | 红外增强暗光/热目标 | 运动增强动态目标检测 |
+
+### 像素级对准的意义
+
+HomoMotion 的核心价值在于**消除相机运动造成的背景运动**:
+
+```
+未对齐:
+Frame(t-1)     Frame(t)
+  背景 ────────────┼──────── 背景 (位置不同)
+  物体 ────────────┼──────── 物体 (位置不同)
+  → 整图都有运动差异
+
+对齐后 (HomoMotion):
+Frame(t-1) →(H变换)→ Frame(t)
+  背景 ────────────────── 背景 (位置对齐)
+  物体 ────────────────── 物体 (仅真正运动处有差异)
+  → 只有运动物体产生差异
+```
