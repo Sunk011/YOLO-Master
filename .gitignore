@@ -1,3 +1,9 @@
+# 临时文件忽略
+tmp/
+*.pt
+RGB+X-Dataset
+exp
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
