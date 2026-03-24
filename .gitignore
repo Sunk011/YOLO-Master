@@ -1,4 +1,5 @@
 # 临时文件忽略
+logs/
 tmp/
 *.pt
 RGB+X-Dataset
