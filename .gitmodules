@@ -4,3 +4,6 @@
 [submodule "3rdparty/YOLOv11-RGBT"]
 	path = 3rdparty/YOLOv11-RGBT
 	url = https://github.com/wandahangFY/YOLOv11-RGBT.git
+[submodule "3rdparty/ultralytics"]
+	path = 3rdparty/ultralytics
+	url = https://github.com/ultralytics/ultralytics.git
