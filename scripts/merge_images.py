@@ -21,8 +21,8 @@ def concat_images(img1_path, img2_path, output_dir, direction="leftright"):
     拼接图片：不改变像素，直接拼接
     direction: leftright（左右）/ updown（上下）
     """
-    img1 = Image.open(img1)
-    img2 = Image.open(img2)
+    img1 = Image.open(img1_path)
+    img2 = Image.open(img2_path)
 
     if direction == "leftright":  # 左右拼接
         new_width = img1.width + img2.width
