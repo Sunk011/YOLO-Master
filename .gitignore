@@ -1,4 +1,5 @@
 # 临时文件忽略
+runs/
 logs/
 tmp/
 *.pt

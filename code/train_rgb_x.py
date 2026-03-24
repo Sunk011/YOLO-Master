@@ -356,7 +356,7 @@ def main():
         help="训练模式: normal (标准), moe (混合专家), lora (低秩适配)",
     )
     parser.add_argument("--epochs", type=int, default=300, help="训练轮数")
-    parser.add_argument("--batch", type=int, default=32, help="批次大小")
+    parser.add_argument("--batch", type=int, default=64, help="批次大小")
     parser.add_argument("--imgsz", type=int, default=640, help="图像尺寸")
     parser.add_argument("--device", type=str, default="0", help="训练设备")
     parser.add_argument("--name", type=str, default="rgb_x_train", help="实验名称")
